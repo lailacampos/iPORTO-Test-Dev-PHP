@@ -8,6 +8,14 @@ use Illuminate\Support\Facades\Http;
 
 class SaveBidPriceOnDataBaseCommand extends Command
 {
+    public $cryptocurrency;
+
+    public function __construct(Cryptocurrency $cryptocurrency)
+    {
+        parent::__construct();
+        $this->cryptocurrency = $cryptocurrency;
+    }
+
     /**
      * The name and signature of the console command.
      *
@@ -37,33 +45,32 @@ class SaveBidPriceOnDataBaseCommand extends Command
                 "symbol" => $symbol,
             ]);
 
-            $cryptocurrency = $response->json();
+            if ($response->status() === 400) {
+                $this->info("Ivalid Symbol");
+            } else {
+                $cryptocurrency = $response->json();
 
-            $this->saveCryptoToDataBase($cryptocurrency);
+                $result = $this->cryptocurrency->saveCryptoToDataBase($cryptocurrency);
 
-            $this->info(Cryptocurrency::find($cryptocurrency["symbol"]));
+                $this->info("Saved to Database:");
+                $this->info(json_encode($result));
+            }
         } else {
 
             $response = Http::get("https://testnet.binancefuture.com/fapi/v1/ticker/price");
 
             $cryptocurrencies = $response->json();
 
+            $crypto_list = [];
             foreach ($cryptocurrencies as $cryptocurrency) {
+                $result = $this->cryptocurrency->saveCryptoToDataBase($cryptocurrency);
+                $result ? $crypto_list[] =  $cryptocurrency : null;
+            }
 
-                $this->saveCryptoToDataBase($cryptocurrency);
+            $this->info("Saved to Database:");
+            foreach ($crypto_list as $cryptocurrency) {
+                $this->info(json_encode($cryptocurrency));
             }
         }
-    }
-
-    private function saveCryptoToDataBase($cryptocurrency)
-    {
-
-        Cryptocurrency::create(
-            [
-                "symbol" => $cryptocurrency["symbol"],
-                "price" => $cryptocurrency["price"],
-                "time" => $cryptocurrency["time"],
-            ]
-        );
     }
 }

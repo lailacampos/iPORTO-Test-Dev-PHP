@@ -1,64 +1,142 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+<h1>Binance's API Consumer</h1>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is an application for consuming <a href="https://binance-docs.github.io/apidocs">Binance's API</a>.
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<h2>Requirements:</h2>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<ul>
+    <li>PHP >= 7.4.29</li>
+    <li>Laravel 8</li>
+    <li>Mysql >= 8.0.29</li>
+</ul>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+<br>
+<hr>
+<h2>Installation:</h2>
 
-## Learning Laravel
+<p>CLone or download the project.</p>
+<p>Cd into root directory.</p>
+<p>Run</p>
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```
+composer install
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Set your `DB_DATABASE`, `DB_USERNAME` and `DB_PASSWORD` variables in your  `.env` file to reflect the Database name, user and password you'll use.
 
-## Laravel Sponsors
+<p>Run</p>
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```
+php artisan migrate
+```
 
-### Premium Partners
+Populate the table `cryptocurrencies` with `cryptocurrencies_table.csv` file located inside `data` folder.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+<br>
+<hr>
+<br>
 
-## Contributing
+<h2>How it works:</h2>
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+<p>This application has no views or routes.</p>
+<p>It is composed of two custom Laravel commands and one model:</p>
 
-## Code of Conduct
+<ul>
+    <li>Commands:
+        <ul>
+            <li>saveBidPriceOnDataBase</li>
+            <li>checkAvgBigPrice</li>
+        </ul>
+    </li>
+    <li>Model:
+        <ul>
+            <li>Cryptocurrency</li>
+        </ul>
+    </li>
+</ul>
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+<br>
 
-## Security Vulnerabilities
+<h3><strong>saveBidPriceOnDataBase</strong></h3>
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+<p>Gets latest price for a symbol or symbols from <a href="https://binance-docs.github.io/apidocs/#symbol-price-ticker">Symbol Price Ticker</a> endpoint and saves it to the database.</p>
+<p>Prints to console the data saved to the database.</p>
 
-## License
+Accepts one optional argument `symbol` that represents the symbol name for a cryptocurrency.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+<p>If no argument is passed, gets lastest price of all symbols and saves all to database.</p>
+<p>If an argument is passed and the argument is a valid symbol, gets the data for that symbol.</p>
+<p>If the symbol is invalid, prints a warning to the console.</p>
+
+<h4><strong>Usage:</strong></h4>
+
+```
+php artisan c:saveBidPriceOnDataBase
+```
+
+Or
+
+```
+php artisan c:saveBidPriceOnDataBase symbol
+```
+
+<br>
+
+<h4><strong>Example output:</strong></h4>
+<p>Input:</p>
+
+```
+php artisan c:saveBidPriceOnDataBase C98USDT
+```
+
+<p>Output:</p>
+
+```
+Saved to Database:
+{"symbol":"C98USDT","price":"0.4842","time":1655219631665,"id":6523}
+```
+
+<br>
+
+<h3><strong>checkAvgBigPrice</strong></h3>
+
+<p>Gets latest price for a symbol or symbols from <a href="https://binance-docs.github.io/apidocs/#symbol-price-ticker">Symbol Price Ticker</a> endpoint and checks it against the average price of the last 100 entries of a symbol in the database.</p>
+
+<p>If the current price for a symbol is 0.5% lower than the average price, prints an alert to the console. If the current price for a symbol is equal to or higher than 99.5% of the average corresponding price, prints to the console that the price is Ok</p>
+
+Accepts one optional argument `symbol` that represents the symbol name for a cryptocurrency.
+
+<p>If no argument is passed, gets lastest price of all symbols and checks each one against the average price of the corresponding symbol.</p>
+
+<p>If an argument is passed and the argument is a valid symbol, gets the data for that symbol and checks current price for that symbol against corresponsing average.</p>
+
+<p>If the symbol is invalid, prints a warning to the console.</p>
+
+<br>
+
+<h4><strong>Usage:</strong></h4>
+
+```
+php artisan c:checkAvgBigPrice
+```
+
+Or
+
+```
+php artisan c:checkAvgBigPrice symbol
+```
+<br>
+
+<h4><strong>Example output:</strong></h4>
+<p>Input:</p>
+
+```
+php artisan c:checkAvgBigPrice LINAUSDT
+```
+
+<p>Output:</p>
+
+```
+Current value for LINAUSDT is over 0.5% lower than average value!
+```
