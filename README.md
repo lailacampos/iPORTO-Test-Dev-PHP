@@ -14,7 +14,7 @@ This is an application for consuming <a href="https://binance-docs.github.io/api
 <br>
 <h2>Installation:</h2>
 
-<p>CLone or download the project.</p>
+<p>Clone or download the project.</p>
 <p>Cd into root directory.</p>
 <p>Run</p>
 
