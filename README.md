@@ -12,7 +12,6 @@ This is an application for consuming <a href="https://binance-docs.github.io/api
 </ul>
 
 <br>
-<hr>
 <h2>Installation:</h2>
 
 <p>CLone or download the project.</p>
@@ -33,9 +32,7 @@ php artisan migrate
 
 Populate the table `cryptocurrencies` with `cryptocurrencies_table.csv` file located inside `data` folder.
 
-<br>
 <hr>
-<br>
 
 <h2>How it works:</h2>
 
